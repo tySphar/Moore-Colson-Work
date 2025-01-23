@@ -1,3 +1,3 @@
 # Moore-Colson-Work
 
-THis is where I heko my father with diffrenet issues that he comes across at Moore Colson.
+This is where I help my Moore Colson with different development problems. 
