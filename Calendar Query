@@ -1,0 +1,38 @@
+//how many Buisiness so far days this month
+
+ITH Calendar AS (
+    -- Generate a series of dates from the beginning of the month to today
+    SELECT
+        CAST(DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1) AS DATE) AS fullDate
+    UNION ALL
+    SELECT
+        DATEADD(DAY, 1, fullDate)
+    FROM Calendar
+    WHERE fullDate < GETDATE() -- Stop once we reach today
+)
+-- Count the business days (weekdays that are not weekends)
+SELECT COUNT(*) AS BusinessDaysCount
+FROM Calendar
+WHERE DATEPART(WEEKDAY, fullDate) BETWEEN 2 AND 6 -- Weekdays: Monday (2) to Friday (6)
+OPTION (MAXRECURSION 0);
+
+
+//Total business days for month
+
+-- Declare the start and end dates for the current month
+DECLARE @startDate DATE = DATEFROMPARTS(YEAR(GETDATE()), MONTH(GETDATE()), 1);  -- First day of current month
+DECLARE @endDate DATE = EOMONTH(GETDATE());  -- Last day of current month
+
+WITH Calendar AS (
+    -- Generate a list of dates from start to end of the current month
+    SELECT @startDate AS fullDate
+    UNION ALL
+    SELECT DATEADD(DAY, 1, fullDate)
+    FROM Calendar
+    WHERE fullDate < @endDate
+)
+-- Count business days (weekdays)
+SELECT COUNT(*) AS TotalBusinessDays
+FROM Calendar
+WHERE DATEPART(WEEKDAY, fullDate) BETWEEN 2 AND 6  -- Weekdays: Monday (2) to Friday (6)
+OPTION (MAXRECURSION 0);
